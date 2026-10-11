@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Play, Pause, Plus, Sliders, Volume2, Mic, Trash2, Copy, Music, Layers } from 'lucide-react';
+import { Play, Pause, Plus, Sliders, Volume2, Mic, Trash2, Copy, Music, Layers, Sparkles } from 'lucide-react';
 import { StudioProject, Track, AudioClip } from '../audio/types';
 import { createDefaultTrackVst } from '../audio/defaultVst';
 
@@ -12,6 +12,7 @@ interface TimelineProps {
   onSeek: (beat: number) => void;
   onStartMicRecord: (trackId: string) => void;
   isRecording: boolean;
+  onOpenAiGenerator?: () => void;
 }
 
 export const Timeline: React.FC<TimelineProps> = ({
@@ -23,6 +24,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   onSeek,
   onStartMicRecord,
   isRecording,
+  onOpenAiGenerator,
 }) => {
   const [selectedClipId, setSelectedClipId] = useState<string | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
@@ -126,14 +128,27 @@ export const Timeline: React.FC<TimelineProps> = ({
           </span>
         </div>
 
-        {/* Add Track Dropdown chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto">
-          <span className="text-slate-400 font-semibold text-[11px]">+ Pista:</span>
+        {/* Add Track Dropdown chips & AI composer */}
+        <div className="flex items-center gap-2 overflow-x-auto">
+          {onOpenAiGenerator && (
+            <button
+              onClick={onOpenAiGenerator}
+              className="px-3 py-1 rounded-lg bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:opacity-95 text-white font-bold text-[11px] flex items-center gap-1.5 shadow transition shrink-0"
+              title="Generar nueva pista con IA gratuita"
+            >
+              <Sparkles size={13} className="text-yellow-300" />
+              <span>Componer con IA (Gratis)</span>
+            </button>
+          )}
+
+          <div className="h-4 w-[1px] bg-slate-700 hidden sm:block" />
+
+          <span className="text-slate-400 font-semibold text-[11px] shrink-0">+ Pista:</span>
           {(['drums', 'bass', 'lead', 'chords', 'vocal'] as const).map((t) => (
             <button
               key={t}
               onClick={() => handleAddTrack(t)}
-              className="px-2.5 py-1 rounded-lg bg-[#1a2133] hover:bg-[#252f47] border border-[#2b3752] text-slate-200 capitalize text-[11px] font-medium transition"
+              className="px-2.5 py-1 rounded-lg bg-[#1a2133] hover:bg-[#252f47] border border-[#2b3752] text-slate-200 capitalize text-[11px] font-medium transition shrink-0"
             >
               {t}
             </button>

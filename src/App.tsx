@@ -240,6 +240,7 @@ export default function App() {
               onSeek={handleSeek}
               onStartMicRecord={handleStartMicRecord}
               isRecording={isRecording}
+              onOpenAiGenerator={() => setLyriaModalOpen(true)}
             />
 
             {/* Quick Mixer preview below timeline */}

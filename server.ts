@@ -116,10 +116,31 @@ app.post('/api/music/generate', async (req, res) => {
     });
   } catch (error: any) {
     console.error('Error generating music:', error);
-    const errorMessage = error?.message || 'Error desconocido al generar música con Lyria.';
-    return res.status(500).json({
-      error: errorMessage,
-      isPaidModelRequired: errorMessage.includes('Resource has been exhausted') || errorMessage.includes('permission') || errorMessage.includes('not found') || errorMessage.includes('quota'),
+    let rawMessage = error?.message || 'Error desconocido al generar música con Lyria.';
+
+    // Often Google GenAI wraps API errors in a JSON string
+    let parsedMessage = rawMessage;
+    try {
+      const parsed = typeof rawMessage === 'string' && rawMessage.startsWith('{') ? JSON.parse(rawMessage) : null;
+      if (parsed?.error?.message) {
+        parsedMessage = parsed.error.message;
+      }
+    } catch {}
+
+    const isQuotaError =
+      parsedMessage.includes('quota') ||
+      parsedMessage.includes('RESOURCE_EXHAUSTED') ||
+      parsedMessage.includes('limit: 0') ||
+      parsedMessage.includes('free_tier');
+
+    const cleanMessage = isQuotaError
+      ? 'Los modelos de música Google Lyria (lyria-3-clip y lyria-3-pro) requieren un plan con facturación activa (Pay-As-You-Go) en Google AI Studio / Cloud. El nivel gratuito (Free Tier) tiene cuota 0 para generación de audio Lyria.'
+      : parsedMessage;
+
+    return res.status(isQuotaError ? 429 : 500).json({
+      error: cleanMessage,
+      isPaidModelRequired: isQuotaError,
+      rawError: parsedMessage,
     });
   }
 });
@@ -236,18 +257,30 @@ Return a strict JSON object with:
 {
   "title": string,
   "concept": string,
+  "genre": string,
+  "bpm": number,
   "chordProgression": string (e.g. "Dm - Bb - C - Am"),
   "structure": [
     { "section": "Intro", "bars": "1-4", "description": string },
     { "section": "Build", "bars": "5-8", "description": string },
-    { "section": "Drop/Hook", "bars": "9-16", "description": string },
-    { "section": "Outro", "bars": "17-20", "description": string }
+    { "section": "Drop/Hook", "bars": "9-16", "description": string }
   ],
-  "soundDesignTips": [string, string, string],
+  "drumPattern": [
+    { "noteNumber": number (36 for kick, 38 for snare, 42 for closed hat, 46 for open hat, 39 for clap), "startBeat": number (0 to 16), "durationBeats": number, "velocity": number }
+  ],
+  "bassPattern": [
+    { "noteNumber": number (33 to 48), "startBeat": number (0 to 16), "durationBeats": number, "velocity": number }
+  ],
+  "leadPattern": [
+    { "noteNumber": number (60 to 84), "startBeat": number (0 to 16), "durationBeats": number, "velocity": number }
+  ],
+  "chordPattern": [
+    { "noteNumber": number (55 to 76), "startBeat": number (0 to 16), "durationBeats": number, "velocity": number }
+  ],
   "stemPresets": {
     "drums": { "kickPitch": number, "reverbWet": number, "compressionRatio": number },
     "bass": { "cutoffFreq": number, "resonance": number, "drive": number, "subBoost": number },
-    "synth": { "waveform": "sawtooth"|"square"|"triangle", "attack": number, "release": number, "delayWet": number }
+    "synth": { "waveform": "sawtooth"|"square"|"triangle"|"sine", "attack": number, "release": number, "filterCutoff": number }
   }
 }
 Only output pure JSON.`;

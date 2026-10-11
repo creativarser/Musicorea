@@ -247,10 +247,11 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center flex-wrap gap-1.5 justify-center">
           <button
             onClick={onOpenLyria}
-            className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 hover:opacity-95 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/20 transition"
+            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 via-indigo-600 to-cyan-500 hover:opacity-95 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-md shadow-indigo-600/30 transition"
+            title="Abrir Compositor de Música con IA"
           >
-            <Music2 size={14} />
-            <span className="hidden sm:inline">IA</span> Lyria
+            <Sparkles size={15} className="text-yellow-300 animate-spin" />
+            <span>Componer con IA (Gratis)</span>
           </button>
 
           <button
