@@ -93,7 +93,9 @@ export const LyriaGeneratorModal: React.FC<LyriaModalProps> = ({
       }
     } catch (err: any) {
       console.error(err);
-      setErrorMessage(err?.message || 'Error de red al conectar con el servidor.');
+      setErrorMessage(
+        'No se pudo comunicar con el servidor /api/music/generate. Si estás en Netlify (hosting estático), recuerda que el backend Express requiere un servidor como Render, Railway o Google Cloud Run, o configurar Netlify Functions con la variable GEMINI_API_KEY. El motor de audio, sintetizador y exportador lossless funcionan al 100% de manera local.'
+      );
     } finally {
       setIsGenerating(false);
     }
