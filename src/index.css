@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-studio-bg: #0b0d13;
+    --color-studio-panel: #131722;
+    --color-studio-surface: #1a1f2e;
+    --color-studio-accent: #6366f1;
+    --color-studio-cyan: #06b6d4;
+    --color-studio-amber: #f59e0b;
+    --color-studio-emerald: #10b981;
+    --color-studio-rose: #f43f5e;
+  }
+
+  body {
+    background-color: #080a0f;
+    color: #e2e8f0;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow-x: hidden;
+  }
+
+  /* Custom audio DAW scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0f131d;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a3349;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3b4766;
+  }
+}
+
+.font-mono-numbers {
+  font-family: 'JetBrains Mono', monospace;
+  font-feature-settings: 'tnum' on, 'zero' on;
+}
+
+/* Pulsing record indicator */
+@keyframes recordPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.95); }
+}
+.animate-record {
+  animation: recordPulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

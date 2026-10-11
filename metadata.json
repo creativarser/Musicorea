@@ -1,0 +1,6 @@
+{
+  "name": "AuraStudio Pro — DAW & AI Mastering",
+  "description": "Estación de trabajo de audio digital (DAW) profesional con generación de música AI Lyria, edición multipista en tiempo real, efectos VST, masterización inteligente LUFS y exportación lossless de alta fidelidad.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
